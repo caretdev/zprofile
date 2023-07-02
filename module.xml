@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+  <Document name="zprofile.ZPM">
+    <Module>
+      <Name>zprofile</Name>
+      <Version>0.1.0</Version>
+      <Keywords>monlbl,linebyline,profile</Keywords>
+      <Description>Line by line profiler for ObjectScript with Execution Stack view</Description>
+      <Packaging>module</Packaging>
+      <SourcesRoot>src</SourcesRoot>
+      <Resource Name="caretdev.zprofile.PKG"/>
+      <UnitTest Name="/tests" Package="UnitTest" Phase="test"/>
+      <CSPApplication
+        Name="/web"
+        Directory="${cspdir}/zprofile"
+        Url="/zprofile"
+        MatchRoles=":${dbrole}"
+        Recurse="1"
+        ServeFiles="1"
+        UnauthenticatedEnabled="1"
+        PasswordAuthEnabled="0"
+        UseSessionCookie="2"
+        />
+        <CSPApplication
+        Name="/web"
+        Directory="${cspdir}/zprofile"
+        Url="/zprofile/api"
+        DispatchClass="caretdev.zprofile.API"
+        Recurse="1"
+        ServeFiles="1"
+        UnauthenticatedEnabled="0"
+        PasswordAuthEnabled="1"
+        UseSessionCookie="2"
+      />
+    </Module>
+  </Document>
+</Export>
