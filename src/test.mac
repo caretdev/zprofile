@@ -1,0 +1,48 @@
+ROUTINE test
+#define hang .1
+main() {
+    Set a = 2
+    Write !,"a = ", a
+    Set var = 2
+    For i=1:1:3 {
+      Set tmp = $$sub()
+    }
+    Write !,"var = ", var
+    Kill var
+    Set tmp = $$sub()
+    Write !,"end"
+    Kill ^a
+    Quit
+}
+sub() private {
+    Set ^a = 2
+    Hang $$$hang
+    Set a = $$sub2()
+    Quit ^a
+}
+sub2() private {
+    Set ^a = 2
+    Hang $$$hang
+    Quit ^a
+}
+test() public {
+  Kill ^caretdev.zprofile.report
+  Do ##class(caretdev.zprofile.main).Trace("Do ^test")
+}
+fhir() public {
+  Kill ^caretdev.zprofile.report
+  Write ##class(%SYSTEM.Config.SharedMemoryHeap).FreeCount(),!
+  Do ##class(caretdev.zprofile.main).Trace("Do ##class(HS.FHIRServer.Tools.DataLoader).SubmitResourceFiles(""~/zprofile/data/fhir/fhir"", ""FHIRSERVER"", ""/fhir/r4"")")
+  Write !,##class(%SYSTEM.Config.SharedMemoryHeap).FreeCount(),!
+}
+aaa() public {
+  Set %zh = $ZHorolog, %st = $Estack
+  zb /trace:all
+  Do ##class(%Monitor.Process).Enable()
+  ZBreak $:"T"::{Set %tzh = $ZHorolog Write "TraceReport: " _ %st _ "," _ $EStack_ "," _ %zh _ "," _ (%tzh - %zh) _ "," _ $ZUtil(84,7,6),!,$Stack($Stack(-1)-2,"MCODE") Set %zh = %tzh, %st = $Estack, % = $ZUtil(84,2,6)}
+  For i=1:1:10 Do
+  . Set ^a = i
+  Break "OFF"
+  Do ##class(%Monitor.Process).Disable()
+  ZWrite i,a
+}

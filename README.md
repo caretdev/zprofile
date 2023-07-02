@@ -33,14 +33,14 @@ Do ##class(caretdev.zprofile.main).Trace("Do Some^Routine")
 Go to http://localhost:8773/zprofile/index.html (change the port to a correct one)
 
 Select the execution report
-![executions list](images/list.png)
+![executions list](https://raw.githubusercontent.com/caretdev/zprofile/main/images/list.png)
 
 On this page, will be shown the code of the first executed method, and it's possible to dive lower by the stack by clicking on arrow down, or return back by stack with arrow up, return back by stack is also available from the the menu.
 
-![code](images/main.png)
+![code](https://raw.githubusercontent.com/caretdev/zprofile/main/images/main.png)
 
 The last line on any stack level, shows the total for each metric through execution, and cells has a gradient filled by the percentage of the value comparing to the total value.
 
 It is possible to select which columns to display, to help select columns total values shown in the dialog too.
 
-![columns](images/columns.png)
+![columns](https://raw.githubusercontent.com/caretdev/zprofile/main/images/columns.png)
