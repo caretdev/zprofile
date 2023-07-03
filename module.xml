@@ -9,7 +9,6 @@
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="caretdev.zprofile.PKG"/>
-      <UnitTest Name="/tests" Package="UnitTest" Phase="test"/>
       <CSPApplication
         Name="/web"
         Directory="${cspdir}/zprofile"
