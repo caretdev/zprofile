@@ -25,6 +25,8 @@ Usage
 ***Important note, that the execution takes much longer (hundreds times) under analyzis than without it***
 
 To build an execution report, run command like this, put a target command as a first parameter.
+This command has to be called from the terminal, it's the only way it can get trace, due to the limitation of ZBreak command used in the project
+
 ```objectscript
 Do ##class(caretdev.zprofile.main).Trace("Do ##class(Some.Class).Method()")")
 Do ##class(caretdev.zprofile.main).Trace("Do Some^Routine")
