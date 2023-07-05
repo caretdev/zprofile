@@ -3,7 +3,7 @@
   <Document name="zprofile.ZPM">
     <Module>
       <Name>zprofile</Name>
-      <Version>0.1.0</Version>
+      <Version>1.0.2</Version>
       <Keywords>monlbl,linebyline,profile</Keywords>
       <Description>Line by line profiler for ObjectScript with Execution Stack view</Description>
       <Packaging>module</Packaging>

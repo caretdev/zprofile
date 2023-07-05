@@ -85,9 +85,19 @@ class ExecutionsList extends React.Component {
 
   delete(id) {
     fetch(id ? `api/data/${id}` : `api/data`, { method: 'DELETE' })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Something went wrong');
+        }
+        return response
+      })
       .then(response => response.json())
       .then((data) => {
+        console.log('delete', data)
         this.setState({ data, originalData: data })
+      })
+      .catch(err => {
+        // console.log(err)
       })
   }
 
@@ -387,7 +397,7 @@ class Main extends React.Component {
       breadcrumb: [],
       menu: {},
       ...this.readParams(),
-      onlyExecuted: localStorage.getItem('onlyExecuted') ? localStorage.getItem('onlyExecuted') == 'true' : true,
+      onlyExecuted: localStorage.getItem('onlyExecuted') ? localStorage.getItem('onlyExecuted') == 'true' : false,
       executions: [],
     };
 

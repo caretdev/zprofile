@@ -41,14 +41,11 @@ ClassMethod Trace(cmd = "", monitor = 1)
     Else {
       $$$send("Metrics", "Time")
     }
-    Set %zpzh = $ZHorolog, %st = $Estack
-    Set %dir = 0, %place = "@"
+    Set %zpzh = $ZHorolog
 
     Set loggingCmd = ""
-    Set loggingCmd = loggingCmd _ " Set %metrics = $ZUtil(84,7,6), %zptzh = $ZHorolog"
     Set loggingCmd = loggingCmd _ " If $System.Event.Wait("""",.1)'=1 { break ""OFF"" write !,""Something went wrong, listener died"",! }"
-    Set loggingCmd = loggingCmd _ " Do $System.Event.Signal($ZChild, $ListBuild(""Trace"", %place, %dir, ($Get(%zptzh) - $Get(%zpzh)), %metrics))"
-    Set loggingCmd = loggingCmd _ " Set %zpzh = %zptzh, %dir = $Estack - %st, %st = $Estack, %place = $Stack($Stack - 2, ""PLACE"")"
+    Set loggingCmd = loggingCmd _ " Do $System.Event.Signal($ZChild, $ListBuild(""Trace"", $Piece($li($zu(41,-2)), ""^"", 2, 3), $Estack, $ZHorolog, $ZUtil(84,7,6)))"
     Set loggingCmd = loggingCmd _ " Do $ZUtil(84,2,6)"
     Set executeCode = "(""" _ $Replace(loggingCmd, """", """""") _  """)"
     ZBreak $:"T"::executeCode
@@ -106,18 +103,24 @@ ClassMethod Listen()
     Set metricsNames = ""
     Set stack = ""
     Set lastLine = 0
+    Set nextPlace = "@"
+    Set prevTime = 0
+
+    Set nextStackLevel = 1
+    Set stackLevel = 0
 
     For {
       Do $System.Event.Signal($ZParent, "")
-      Set $ListBuild(res, msg) = $System.Event.WaitMsg("", timeout)
+      Set eventMsg = $System.Event.WaitMsg("", timeout)
+      Set $ListBuild(res, msg) = eventMsg
       If res<=0 {
         Set @rgn@(0) = res
         Quit
       }
-      #; Set @rgn@("_", $Increment(@rgn@("_"))) = msg
-      #; Continue
       Quit:msg=""
       Set type = $$$pop(msg)
+      #; Set @rgn@(-2, $Increment(@rgn@(-2), -1)) = eventMsg _ $ListBuild(dgn)
+      #; Continue
       Continue:type=""
       Quit:type="End"
       If type = "Metrics" {
@@ -139,11 +142,18 @@ ClassMethod Listen()
       }
       Continue:'started
       Continue:type'="Trace"
-      Set place = $$$pop(msg)
+      Set place = nextPlace
+      Set nextPlace = $$$pop(msg)
       Set place = $Piece(place, " ")
+      Set $ListBuild(prevStackLevel, stackLevel) = $ListBuild(stackLevel, nextStackLevel)
+      Set nextStackLevel = $$$pop(msg)
+      Set direction = stackLevel - prevStackLevel
+      Set curTime = $$$pop(msg)
+      Set time = curTime - prevTime
+      Set prevTime = curTime
+      Continue:direction>1
       Continue:place["@"
-      Set direction = $$$pop(msg)
-      Set time = $$$pop(msg)
+      Continue:place[$ZName
       Set metrics = $$$pop(msg)
       #; GloRef
       Set $Piece(metrics, ",", 1) = $Piece(metrics, ",", 1) - 1
@@ -155,7 +165,7 @@ ClassMethod Listen()
       Set name = label _ "^" _ routine
 
       If direction>0 {
-        Break:direction>1
+        Throw:direction>1 ##class(%Exception.General).%New("Too big step: " _ $ListToString($ListBuild(direction, stackLevel, prevStackLevel, nextStackLevel)))
         For tIndex=1:1 {
           Quit:'$Data(@dgn@(lastLine,tIndex))
           Quit:($Get(@dgn@(lastLine,tIndex, -1))=name)
@@ -205,10 +215,10 @@ ClassMethod Listen()
       }
       Set @dgn@(line) = metrics
     }
-    Set @rgn@(0) = ..CountTotal(dgn)
+    Set @rgn@(0) = ..CountTotal($Name(@rgn@(0, 1)))
   }
   Catch ex {
-    Set @rgn@(-1) = ex.DisplayString() _ "; " _ $Get(dgn)
+    Set @rgn@(-1) = $ListBuild(ex.DisplayString(), eventMsg, $Get(dgn))
   }
 }
 

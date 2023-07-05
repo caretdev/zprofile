@@ -127,7 +127,7 @@ ClassMethod GetData(id = "", stack = "") As %Status
         Do items.%Push(..GetStackChunk($Name(@dgn@(ind))))
       }
     }
-    Set total = @rgn@(0)
+    Set total = $Get(@rgn@(0))
     Set result = {
       "metrics": (metrics),
       "items": (items),
