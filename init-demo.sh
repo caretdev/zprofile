@@ -17,4 +17,4 @@ Set resource("PublicPermission")="R"
 Do ##class(Security.Resources).Modify("%DB_FHIRSERVER", .resource)
 
 Set $Namespace = "FHIRSERVER"
-Do $system.OBJ.Load("~/zprofile/.github/workflows/demo.xml.gz")
+Do $system.OBJ.Load("~/zprofile/demo.xml.gz")
